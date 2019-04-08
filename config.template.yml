@@ -1,0 +1,7 @@
+photoserver:
+  host: <HOST>
+  port: <PORT>
+client:
+  id: "<GUID>"
+  display_time: <TIME_IN_SECONDS>
+  fullscreen: true
