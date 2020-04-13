@@ -27,7 +27,7 @@ steps:
 
 - task: ArchiveFiles@2
   inputs:
-    rootFolderOrFile: '$(Build.Repository.LocalPath)'
+    rootFolderOrFile: '$(Build.Repository.LocalPath)/*.py'
     includeRootFolder: true
     archiveType: 'zip'
     archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
