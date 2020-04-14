@@ -25,11 +25,22 @@ steps:
     versionSpec: '$(python.version)'
   displayName: 'Use Python $(python.version)'
 
-- task: ArchiveFiles@2
+- task: PowerShell@2
   inputs:
-    rootFolderOrFile: '$(Build.Repository.LocalPath)/screensaver.py'
-    includeRootFolder: false
-    archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
-    replaceExistingArchive: true
+    filePath: './publish.ps1'
+  displayName: 'Publish to artifacts directory'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: './artifacts'
+    ArtifactName: 'Screensaver.Client.Python'
+    publishLocation: 'Container'
+
+# - task: ArchiveFiles@2
+#   inputs:
+#     rootFolderOrFile: '$(Build.Repository.LocalPath)/artifacts'
+#     includeRootFolder: false
+#     archiveType: 'zip'
+#     archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+#     replaceExistingArchive: true
 
