@@ -1,3 +1,3 @@
 #!/bin/bash
 
-mkdir /opt/screensaver-client-python
+sudo mkdir /opt/screensaver-client-python
