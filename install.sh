@@ -8,3 +8,5 @@ sudo cp screensaver.py /opt/screensaver-client-python/
 sudo cp screensaver.service /lib/systemd/system/
 sudo chmod 644 /lib/systemd/system/screensaver.service
 
+sudo systemctl daemon-reload
+sudo systemctl enable screensaver.service
