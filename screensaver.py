@@ -1,4 +1,5 @@
-import sys, pygame
+import sys
+import pygame
 import io
 import urllib2
 import requests
@@ -8,7 +9,7 @@ from datetime import datetime
 from datetime import timedelta
 import yaml
 
-config = yaml.load(open("./config.yml"))
+config = yaml.load(open("/etc/screensaver/config.yml"))
 
 photo_server = config['photoserver']['host']
 port = config['photoserver']['port']
