@@ -1,0 +1,10 @@
+[Unit]
+ Description=Screensaver Service
+ After=multi-user.target
+
+ [Service]
+ Type=idle
+ ExecStart=python /opt/screensaver-client-python/screensaver.py
+
+ [Install]
+ WantedBy=multi-user.target
