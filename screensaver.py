@@ -34,7 +34,7 @@ response = requests.post("http://" + photo_server + ":" + str(port) + "/api/phot
 
 response = requests.get("http://" + photo_server + ":" + str(port) + "/api/photoLists/" + guid)
 photo_list_json = response.json()
-total_images = photo_list_json['Total']
+total_images = photo_list_json['total']
 image_index = 0
 
 while True:
