@@ -72,6 +72,8 @@ while not initialized:
 
 last_update = datetime.now() - timedelta(minutes=10)
 
+image_data = None
+
 while not shutdown:
     events = pygame.event.get()
     for event in events:
@@ -83,14 +85,15 @@ while not shutdown:
     delta = datetime.now() - last_update
     
     if delta.total_seconds() > display_time:
-        
-        image_url = "http://" + photo_server + ":" + str(port) + "/api/photoLists/"+ client_id + "/photos/" + str(image_index) + "/data"
+
         image_stream = None
 
         try:
-            response = requests.get(image_url)
-
-            image_data = io.BytesIO(response.content)
+            if image_data is None:
+                image_url = "http://" + photo_server + ":" + str(
+                    port) + "/api/photoLists/" + client_id + "/photos/" + str(image_index) + "/data"
+                response = requests.get(image_url)
+                image_data = io.BytesIO(response.content)
             
             image = pygame.image.load(image_data)
             
@@ -114,7 +117,13 @@ while not shutdown:
                 'Content-Type': 'application/json; UTF-8'
             }
             response = requests.put(currentIndexUri, data=content.encode('utf-8'), headers=headers)
-            print response.status_code
+
+            # Preload the next photo
+            image_url = "http://" + photo_server + ":" + str(port) + "/api/photoLists/" + client_id + "/photos/" + str(
+                image_index) + "/data"
+            response = requests.get(image_url)
+            image_data = io.BytesIO(response.content)
+
         except Exception, e:
             print "Generic exception caught"
             last_update = datetime.now()
