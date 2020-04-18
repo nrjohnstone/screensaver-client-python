@@ -88,7 +88,15 @@ while not shutdown:
             last_update = datetime.now()
             image_index += 1
             if image_index >= total_images:
-                image_index = 0                
+                image_index = 0
+
+            currentIndexUri = "http://" + photo_server + ":" + str(port) + "/api/photoLists/" + guid + "/currentIndex"
+            content = str(image_index)
+            headers = {
+                'Content-Type': 'application/json; UTF-8'
+            }
+            response = requests.put(currentIndexUri, data=content.encode('utf-8'), headers=headers)
+            print response.status_code
         except Exception, e:
             print "Generic exception caught"
             last_update = datetime.now()
