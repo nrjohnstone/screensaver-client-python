@@ -9,7 +9,15 @@ from datetime import datetime
 from datetime import timedelta
 import yaml
 import os.path
+import signal
 
+
+def exit_gracefully(self, signum, frame):
+    print('SIGINT or CTRL-C detected. Exiting gracefully')
+    self.shutdown = True
+
+
+shutdown = False
 file_exists = os.path.isfile("/etc/screensaver/config.yml")
 
 if file_exists:
@@ -44,7 +52,9 @@ photo_list_json = response.json()
 total_images = photo_list_json['total']
 image_index = 0
 
-while True:
+signal.signal(signal.SIGTERM, exit_gracefully)
+
+while not shutdown:
     events = pygame.event.get()
     for event in events:
         if event.type == pygame.KEYDOWN:
@@ -84,3 +94,7 @@ while True:
             last_update = datetime.now()
 
     pygame.time.wait(50)
+
+pygame.display.quit()
+pygame.quit()
+sys.exit(0)
