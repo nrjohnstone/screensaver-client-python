@@ -10,7 +10,7 @@ from datetime import timedelta
 import yaml
 import os.path
 
-file_exists = os.path.isfile("/etc/screensaver/config.yaml")
+file_exists = os.path.isfile("/etc/screensaver/config.yml")
 
 if file_exists:
     config = yaml.load(open("/etc/screensaver/config.yml"))
