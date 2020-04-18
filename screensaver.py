@@ -34,25 +34,26 @@ run_fullscreen = config['client']['fullscreen']
 pygame.init()
 pygame.mouse.set_visible(False)
 
+signal.signal(signal.SIGTERM, exit_gracefully)
+
 if run_fullscreen:
     screen = pygame.display.set_mode([0,0], pygame.FULLSCREEN)
 else:
     screen = pygame.display.set_mode([0,0])
 
 screen_width = screen.get_width()
-screen_heigh = screen.get_height()
-
-last_update = datetime.now() - timedelta(minutes=10)
+screen_height = screen.get_height()
 
 guid = client_id
-response = requests.post("http://" + photo_server + ":" + str(port) + "/api/photoLists/" + guid)
+photo_server_base_url = "http://" + photo_server + ":" + str(port) + "/api"
+response = requests.post(photo_server_base_url + "/photoLists/" + guid)
 
-response = requests.get("http://" + photo_server + ":" + str(port) + "/api/photoLists/" + guid)
+response = requests.get(photo_server_base_url + "/photoLists/" + guid)
 photo_list_json = response.json()
 total_images = photo_list_json['total']
 image_index = 0
 
-signal.signal(signal.SIGTERM, exit_gracefully)
+last_update = datetime.now() - timedelta(minutes=10)
 
 while not shutdown:
     events = pygame.event.get()
