@@ -46,12 +46,29 @@ screen_height = screen.get_height()
 
 guid = client_id
 photo_server_base_url = "http://" + photo_server + ":" + str(port) + "/api"
-response = requests.post(photo_server_base_url + "/photoLists/" + guid)
 
-response = requests.get(photo_server_base_url + "/photoLists/" + guid)
-photo_list_json = response.json()
-total_images = photo_list_json['total']
+initialized = False
+total_images = 0
 image_index = 0
+
+while not initialized:
+    try:
+        response = requests.get(photo_server_base_url + "/photoLists/" + guid)
+
+        if response.status_code == 404:
+            response = requests.post(photo_server_base_url + "/photoLists/" + guid)
+            if response.status_code == 200:
+                continue
+        elif response.status_code == 200:
+            photo_list_json = response.json()
+            total_images = photo_list_json['total']
+            image_index = photo_list_json['currentIndex']
+            initialized = True
+            continue
+        else:
+            pygame.time.wait(2000)
+    except requests.exceptions.ConnectionError as ex:
+        pygame.time.wait(2000)
 
 last_update = datetime.now() - timedelta(minutes=10)
 
