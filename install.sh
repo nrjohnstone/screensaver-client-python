@@ -18,4 +18,4 @@ sudo sed -i "s|<SCREENSAVER_FULL_SCREEN>|$SCREENSAVER_FULL_SCREEN|g" /etc/screen
 
 #sudo systemctl daemon-reload
 #sudo systemctl enable screensaver.service
-#sudo shutdown -r 60
+sudo shutdown -r 1
