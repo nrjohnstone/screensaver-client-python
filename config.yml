@@ -1,0 +1,7 @@
+photoserver:
+  host: 192.168.1.20
+  port: 16001
+client:
+  id: "5bc1598a-acef-4590-987f-a8125428d2df"
+  display_time: 10
+  fullscreen: true

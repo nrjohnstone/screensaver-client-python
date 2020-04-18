@@ -8,8 +8,14 @@ from urllib2 import urlopen
 from datetime import datetime
 from datetime import timedelta
 import yaml
+import os.path
 
-config = yaml.load(open("/etc/screensaver/config.yml"))
+file_exists = os.path.isfile("/etc/screensaver/config.yaml")
+
+if file_exists:
+    config = yaml.load(open("/etc/screensaver/config.yml"))
+else:
+    config = yaml.load(open("config.yml"))
 
 photo_server = config['photoserver']['host']
 port = config['photoserver']['port']
