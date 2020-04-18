@@ -1,7 +1,7 @@
 photoserver:
-  host: <HOST>
-  port: <PORT>
+  host: <SCREENSAVER_API_HOST>
+  port: <SCREENSAVER_API_PORT>
 client:
-  id: "<GUID>"
-  display_time: <TIME_IN_SECONDS>
-  fullscreen: true
+  id: <SCREEN_SAVER_CLIENT_ID>
+  display_time: <SCREENSAVER_DISPLAY_TIME>
+  fullscreen: <SCREENSAVER_FULL_SCREEN>>
