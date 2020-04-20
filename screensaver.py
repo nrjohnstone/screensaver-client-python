@@ -11,7 +11,7 @@ import yaml
 import os.path
 import signal
 import logging
-import logstash
+#import logstash
 
 
 def exit_gracefully(self, signum, frame):
