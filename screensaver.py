@@ -10,12 +10,32 @@ from datetime import timedelta
 import yaml
 import os.path
 import signal
+import logging
+import logstash
 
 
 def exit_gracefully(self, signum, frame):
     print('SIGINT or CTRL-C detected. Exiting gracefully')
     self.shutdown = True
 
+host = '192.168.1.10'
+
+#test_logger = logging.getLogger('python-logstash-logger')
+#test_logger.setLevel(logging.INFO)
+#test_logger.addHandler(logstash.TCPLogstashHandler(host, 19501, version=1))
+
+#test_logger.error('python-logstash: test logstash error message.')
+
+log = logging.getLogger("my-logger")
+log.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+fh = logging.FileHandler('logfile.log')
+fh.setFormatter(formatter)
+
+log.addHandler(fh)
+
+log.error("Error level, world")
+log.debug("debug message")
 
 shutdown = False
 file_exists = os.path.isfile("/etc/screensaver/config.yml")
@@ -68,6 +88,7 @@ while not initialized:
         else:
             pygame.time.wait(2000)
     except requests.exceptions.ConnectionError as ex:
+        log.exception("Unable to initialize")
         pygame.time.wait(2000)
 
 last_update = datetime.now() - timedelta(minutes=10)
@@ -125,8 +146,9 @@ while not shutdown:
             image_data = io.BytesIO(response.content)
 
         except Exception, e:
-            print "Generic exception caught"
+            log.exception("Exception while processing main loop")
             last_update = datetime.now()
+            pygame.time.wait(1000)
 
     pygame.time.wait(50)
 
