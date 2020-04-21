@@ -127,6 +127,12 @@ while not shutdown:
             screen.fill(0)
             screen.blit(image, image_rect)
             pygame.display.flip()
+        except Exception, e:
+            log.exception("Exception while loading image in main loop - image_index: " + str(image_index))
+            last_update = datetime.now()
+            pygame.time.wait(1000)
+
+        try:
             last_update = datetime.now()
             image_index += 1
             if image_index >= total_images:
@@ -144,9 +150,8 @@ while not shutdown:
                 image_index) + "/data"
             response = requests.get(image_url)
             image_data = io.BytesIO(response.content)
-
         except Exception, e:
-            log.exception("Exception while processing main loop")
+            log.exception("Exception while recording current index in main loop")
             last_update = datetime.now()
             pygame.time.wait(1000)
 
