@@ -11,6 +11,7 @@ import yaml
 import os.path
 import signal
 import logging
+import os
 #import logstash
 
 
@@ -26,10 +27,15 @@ host = '192.168.1.10'
 
 #test_logger.error('python-logstash: test logstash error message.')
 
+log_path = "/var/log/screensaver/logfile.log"
+
+if os.name == 'nt':
+    log_path = "logfile.log"
+
 log = logging.getLogger("my-logger")
 log.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-fh = logging.FileHandler('logfile.log')
+fh = logging.FileHandler(log_path)
 fh.setFormatter(formatter)
 
 log.addHandler(fh)
