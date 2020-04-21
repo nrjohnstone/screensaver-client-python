@@ -40,8 +40,7 @@ fh.setFormatter(formatter)
 
 log.addHandler(fh)
 
-log.error("Error level, world")
-log.debug("debug message")
+log.info("Screensaver starting")
 
 shutdown = False
 file_exists = os.path.isfile("/etc/screensaver/config.yml")
@@ -77,6 +76,7 @@ initialized = False
 total_images = 0
 image_index = 0
 
+log.info("Screensaver initialize first image")
 while not initialized:
     try:
         response = requests.get(photo_server_base_url + "/photoLists/" + guid)
@@ -101,6 +101,7 @@ last_update = datetime.now() - timedelta(minutes=10)
 
 image_data = None
 
+log.info("Screensaver enter mainloop")
 while not shutdown:
     events = pygame.event.get()
     for event in events:
