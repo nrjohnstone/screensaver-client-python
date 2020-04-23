@@ -31,6 +31,15 @@ class PhotoRepository:
         image_data = io.BytesIO(response.content)
         return GetPhotoResult(image_data, response)
 
+    def update_current_index(self, photo_list_id, current_index):
+        uri = self.base_url + "/photoLists/" + photo_list_id + "/currentIndex"
+        content = str(current_index)
+        headers = {
+            'Content-Type': 'application/json; UTF-8'
+        }
+        response = requests.put(uri, data=content.encode('utf-8'), headers=headers)
+        return response.status_code == 200
+
 
 class PhotoListResult:
 

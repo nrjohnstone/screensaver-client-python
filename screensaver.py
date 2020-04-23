@@ -145,12 +145,7 @@ while not shutdown:
             if image_index >= total_images:
                 image_index = 0
 
-            currentIndexUri = "http://" + photo_server + ":" + str(port) + "/api/photoLists/" + photo_list_id + "/currentIndex"
-            content = str(image_index)
-            headers = {
-                'Content-Type': 'application/json; UTF-8'
-            }
-            response = requests.put(currentIndexUri, data=content.encode('utf-8'), headers=headers)
+            photoRepository.update_current_index(photo_list_id, image_index)
 
             # Preload the next photo
             response = photoRepository.getPhoto(photo_list_id, image_index)
