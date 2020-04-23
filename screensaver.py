@@ -12,6 +12,7 @@ import os.path
 import signal
 import logging
 import os
+from PhotoRepository import PhotoRepository
 #import logstash
 
 
@@ -56,6 +57,8 @@ client_id = config['client']['id']
 display_time = config['client']['display_time']
 run_fullscreen = config['client']['fullscreen']
 
+photoRepository = PhotoRepository(photo_server, port, client_id)
+
 pygame.init()
 pygame.mouse.set_visible(False)
 
@@ -79,10 +82,10 @@ image_index = 0
 log.info("Screensaver initialize first image")
 while not initialized:
     try:
-        response = requests.get(photo_server_base_url + "/photoLists/" + guid)
+        response = photoRepository.getPhotoList(guid)
 
         if response.status_code == 404:
-            response = requests.post(photo_server_base_url + "/photoLists/" + guid)
+            response = photoRepository.createPhotoList(guid)
             if response.status_code == 200:
                 continue
         elif response.status_code == 200:
@@ -118,9 +121,10 @@ while not shutdown:
 
         try:
             if image_data is None:
-                image_url = "http://" + photo_server + ":" + str(
-                    port) + "/api/photoLists/" + client_id + "/photos/" + str(image_index) + "/data"
-                response = requests.get(image_url)
+                #image_url = "http://" + photo_server + ":" + str(
+                #    port) + "/api/photoLists/" + client_id + "/photos/" + str(image_index) + "/data"
+                #response = requests.get(image_url)
+                response = photoRepository.getPhoto(image_index)
                 image_data = io.BytesIO(response.content)
             
             image = pygame.image.load(image_data)
