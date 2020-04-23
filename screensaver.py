@@ -57,7 +57,7 @@ client_id = config['client']['id']
 display_time = config['client']['display_time']
 run_fullscreen = config['client']['fullscreen']
 
-photoRepository = PhotoRepository(photo_server, port, client_id)
+photoRepository = PhotoRepository(photo_server, port)
 
 pygame.init()
 pygame.mouse.set_visible(False)
@@ -72,7 +72,7 @@ else:
 screen_width = screen.get_width()
 screen_height = screen.get_height()
 
-guid = client_id
+photo_list_id = client_id
 photo_server_base_url = "http://" + photo_server + ":" + str(port) + "/api"
 
 initialized = False
@@ -82,16 +82,15 @@ image_index = 0
 log.info("Screensaver initialize first image")
 while not initialized:
     try:
-        response = photoRepository.getPhotoList(guid)
+        response = photoRepository.getPhotoList(photo_list_id)
 
         if response.status_code == 404:
-            response = photoRepository.createPhotoList(guid)
+            response = photoRepository.createPhotoList(photo_list_id)
             if response.status_code == 200:
                 continue
         elif response.status_code == 200:
-            photo_list_json = response.json()
-            total_images = photo_list_json['total']
-            image_index = photo_list_json['currentIndex']
+            total_images = response.total
+            image_index = response.current_index
             initialized = True
             continue
         else:
@@ -121,11 +120,8 @@ while not shutdown:
 
         try:
             if image_data is None:
-                #image_url = "http://" + photo_server + ":" + str(
-                #    port) + "/api/photoLists/" + client_id + "/photos/" + str(image_index) + "/data"
-                #response = requests.get(image_url)
-                response = photoRepository.getPhoto(image_index)
-                image_data = io.BytesIO(response.content)
+                response = photoRepository.getPhoto(photo_list_id, image_index)
+                image_data = response.image_data
             
             image = pygame.image.load(image_data)
             
@@ -149,7 +145,7 @@ while not shutdown:
             if image_index >= total_images:
                 image_index = 0
 
-            currentIndexUri = "http://" + photo_server + ":" + str(port) + "/api/photoLists/" + guid + "/currentIndex"
+            currentIndexUri = "http://" + photo_server + ":" + str(port) + "/api/photoLists/" + photo_list_id + "/currentIndex"
             content = str(image_index)
             headers = {
                 'Content-Type': 'application/json; UTF-8'
@@ -157,10 +153,8 @@ while not shutdown:
             response = requests.put(currentIndexUri, data=content.encode('utf-8'), headers=headers)
 
             # Preload the next photo
-            image_url = "http://" + photo_server + ":" + str(port) + "/api/photoLists/" + client_id + "/photos/" + str(
-                image_index) + "/data"
-            response = requests.get(image_url)
-            image_data = io.BytesIO(response.content)
+            response = photoRepository.getPhoto(photo_list_id, image_index)
+            image_data = response.image_data
         except Exception, e:
             log.exception("Exception while recording current index in main loop")
             last_update = datetime.now()
