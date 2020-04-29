@@ -61,7 +61,8 @@ signal.signal(signal.SIGTERM, exit_gracefully)
 if run_fullscreen:
     screen = pygame.display.set_mode([0, 0], pygame.FULLSCREEN)
 else:
-    screen = pygame.display.set_mode([0, 0])
+    resolution = [1280, 720]
+    screen = pygame.display.set_mode(resolution)
 
 screen_width = screen.get_width()
 screen_height = screen.get_height()
@@ -70,7 +71,6 @@ log.info("screen_width: " + str(screen_width))
 log.info("screen_height: " + str(screen_height))
 
 photo_list_id = client_id
-photo_server_base_url = "http://" + photo_server + ":" + str(port) + "/api"
 
 initialized = False
 total_images = 0
@@ -121,13 +121,29 @@ while not shutdown:
                 image_data = response.image_data
             
             image = pygame.image.load(image_data)
-            
-            wpercent = (screen_width/float(image.get_width()))
-            hsize = int((float(image.get_height())*float(wpercent)))
 
-            image = pygame.transform.smoothscale(image, (screen_width, hsize))
+            image_height = image.get_height()
+            image_width = image.get_width()
+            image_ratio = float(image_width) / float(image_height)
+
+            width_ratio = (screen_width / float(image_width))
+            height_ratio = (screen_height / float(image_height))
+
+            if width_ratio > height_ratio:
+                image_height = screen_height
+                image_width = int((float(screen_height)) * float(image_ratio))
+            else:
+                image_height = int((float(screen_width)) / float(image_ratio))
+                image_width = screen_width
+
+            image = pygame.transform.smoothscale(image, (image_width, image_height))
+
+            image_center_x = screen_width / 2
+            image_center_y = screen_height / 2
 
             image_rect = image.get_rect()
+            image_rect.center = [image_center_x, image_center_y]
+
             screen.fill(0)
             screen.blit(image, image_rect)
             pygame.display.flip()
