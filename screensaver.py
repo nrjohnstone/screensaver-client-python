@@ -13,20 +13,14 @@ import signal
 import logging
 import os
 from PhotoRepository import PhotoRepository
-#import logstash
 
 
 def exit_gracefully(self, signum, frame):
     print('SIGINT or CTRL-C detected. Exiting gracefully')
     self.shutdown = True
 
+
 host = '192.168.1.10'
-
-#test_logger = logging.getLogger('python-logstash-logger')
-#test_logger.setLevel(logging.INFO)
-#test_logger.addHandler(logstash.TCPLogstashHandler(host, 19501, version=1))
-
-#test_logger.error('python-logstash: test logstash error message.')
 
 log_path = "/var/log/screensaver/logfile.log"
 
@@ -82,10 +76,10 @@ image_index = 0
 log.info("Screensaver initialize first image")
 while not initialized:
     try:
-        response = photoRepository.getPhotoList(photo_list_id)
+        response = photoRepository.get_photolist(photo_list_id)
 
         if response.status_code == 404:
-            response = photoRepository.createPhotoList(photo_list_id)
+            response = photoRepository.create_photolist(photo_list_id)
             if response.status_code == 200:
                 continue
         elif response.status_code == 200:
@@ -120,7 +114,7 @@ while not shutdown:
 
         try:
             if image_data is None:
-                response = photoRepository.getPhoto(photo_list_id, image_index)
+                response = photoRepository.get_photo(photo_list_id, image_index)
                 image_data = response.image_data
             
             image = pygame.image.load(image_data)
@@ -148,7 +142,7 @@ while not shutdown:
             photoRepository.update_current_index(photo_list_id, image_index)
 
             # Preload the next photo
-            response = photoRepository.getPhoto(photo_list_id, image_index)
+            response = photoRepository.get_photo(photo_list_id, image_index)
             image_data = response.image_data
         except Exception, e:
             log.exception("Exception while recording current index in main loop")
