@@ -59,12 +59,15 @@ pygame.mouse.set_visible(False)
 signal.signal(signal.SIGTERM, exit_gracefully)
 
 if run_fullscreen:
-    screen = pygame.display.set_mode([1920, 1280], pygame.FULLSCREEN)
+    screen = pygame.display.set_mode([0, 0], pygame.FULLSCREEN)
 else:
     screen = pygame.display.set_mode([0, 0])
 
 screen_width = screen.get_width()
 screen_height = screen.get_height()
+
+log.info("screen_width: " + str(screen_width))
+log.info("screen_height: " + str(screen_height))
 
 photo_list_id = client_id
 photo_server_base_url = "http://" + photo_server + ":" + str(port) + "/api"
