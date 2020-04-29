@@ -65,9 +65,9 @@ pygame.mouse.set_visible(False)
 signal.signal(signal.SIGTERM, exit_gracefully)
 
 if run_fullscreen:
-    screen = pygame.display.set_mode([0,0], pygame.FULLSCREEN)
+    screen = pygame.display.set_mode([1920, 1280], pygame.FULLSCREEN)
 else:
-    screen = pygame.display.set_mode([0,0])
+    screen = pygame.display.set_mode([0, 0])
 
 screen_width = screen.get_width()
 screen_height = screen.get_height()
