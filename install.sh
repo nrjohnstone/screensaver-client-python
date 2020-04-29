@@ -5,6 +5,7 @@ sudo mkdir /opt/screensaver-client-python
 sudo rm /opt/screensaver-client-python/*.* -f
 
 sudo cp screensaver.py /opt/screensaver-client-python/
+sudo cp PhotoRepository.py /opt/screensaver-client-python/
 sudo cp config.template.yml /etc/screensaver/config.yml
 
 sudo sed -i "s|<SCREENSAVER_API_HOST>|$SCREENSAVER_API_HOST|g" /etc/screensaver/config.yml
