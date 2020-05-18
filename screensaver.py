@@ -72,29 +72,9 @@ log.info("screen_height: " + str(screen_height))
 
 photo_list_id = client_id
 
-initialized = False
+photo_list_initialized = False
 total_images = 0
 image_index = 0
-
-log.info("Screensaver initialize first image")
-while not initialized:
-    try:
-        response = photoRepository.get_photolist(photo_list_id)
-
-        if response.status_code == 404:
-            response = photoRepository.create_photolist(photo_list_id)
-            if response.status_code == 200:
-                continue
-        elif response.status_code == 200:
-            total_images = response.total
-            image_index = response.current_index
-            initialized = True
-            continue
-        else:
-            pygame.time.wait(2000)
-    except requests.exceptions.ConnectionError as ex:
-        log.exception("Unable to initialize")
-        pygame.time.wait(2000)
 
 last_update = datetime.now() - timedelta(minutes=10)
 
@@ -108,7 +88,29 @@ while not shutdown:
             if event.key == pygame.K_ESCAPE:
                 pygame.quit()
                 sys.exit(0)
-    
+
+    if not photo_list_initialized:
+        log.info("Screensaver initialize first image")
+
+    while not photo_list_initialized:
+        try:
+            response = photoRepository.get_photolist(photo_list_id)
+
+            if response.status_code == 200:
+                total_images = response.total
+                image_index = response.current_index
+                photo_list_initialized = True
+                continue
+            elif response.status_code == 404:
+                response = photoRepository.create_photolist(photo_list_id)
+                if response.status_code == 200:
+                    continue
+            else:
+                pygame.time.wait(2000)
+        except requests.exceptions.ConnectionError as ex:
+            log.exception("Unable to initialize")
+            pygame.time.wait(2000)
+
     delta = datetime.now() - last_update
     
     if delta.total_seconds() > display_time:
@@ -118,8 +120,14 @@ while not shutdown:
         try:
             if image_data is None:
                 response = photoRepository.get_photo(photo_list_id, image_index)
+                if response.status_code == 404:
+                    response = photoRepository.get_photolist(photo_list_id)
+                    if response.status_code == 404:
+                        photo_list_initialized = False
+                        continue
+
                 image_data = response.image_data
-            
+
             image = pygame.image.load(image_data)
 
             image_height = image.get_height()
@@ -162,11 +170,19 @@ while not shutdown:
 
             # Preload the next photo
             response = photoRepository.get_photo(photo_list_id, image_index)
-            image_data = response.image_data
+            if response.status_code == 200:
+                image_data = response.image_data
+            elif response.status_code == 404:
+                response = photoRepository.create_photolist(photo_list_id)
+                if response.status_code == 404:
+                    photo_list_initialized = False
+                else:
+                    log.error("Unable to create photolist. Retry in 10 seconds")
+                    pygame.time.wait(10000)
         except Exception, e:
             log.exception("Exception while recording current index in main loop")
             last_update = datetime.now()
-            pygame.time.wait(1000)
+            pygame.time.wait(10000)
 
     pygame.time.wait(50)
 
