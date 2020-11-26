@@ -1,7 +1,11 @@
 #!/bin/bash
+sudo apt-get install python-pygame -y
+sudo apt-get install python-requests -y
+sudo apt-get install python-yaml -y
 
 sudo mkdir /opt/screensaver-client-python -p
 sudo mkdir /etc/screensaver -p
+sudo mkdir /var/log/screensaver -p
 
 sudo rm /opt/screensaver-client-python/*.* -f
 
@@ -15,9 +19,9 @@ sudo sed -i "s|<SCREEN_SAVER_CLIENT_ID>|$SCREENSAVER_CLIENT_ID|g" /etc/screensav
 sudo sed -i "s|<SCREENSAVER_DISPLAY_TIME>|$SCREENSAVER_DISPLAY_TIME|g" /etc/screensaver/config.yml
 sudo sed -i "s|<SCREENSAVER_FULL_SCREEN>|$SCREENSAVER_FULL_SCREEN|g" /etc/screensaver/config.yml
 
-#sudo cp screensaver.service /lib/systemd/system/
-#sudo chmod 644 /lib/systemd/system/screensaver.service
+# Enable screensaver on boot
+sudo cp screensaver-start.sh /etc/init.d/screensaver-start.sh
+sudo chmod +x /etc/init.d/screensaver-start.sh
+sudo update-rc.d screensaver-start.sh defaults
 
-#sudo systemctl daemon-reload
-#sudo systemctl enable screensaver.service
 sudo shutdown -r 1
