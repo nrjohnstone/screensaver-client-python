@@ -1,6 +1,7 @@
 #!/bin/bash
 
-sudo mkdir /opt/screensaver-client-python
+sudo mkdir /opt/screensaver-client-python -p
+sudo mkdir /etc/screensaver -p
 
 sudo rm /opt/screensaver-client-python/*.* -f
 
